@@ -7,10 +7,9 @@ class Substance extends Component {
     render() { 
          // recupere la prop data du composant HomePage
         const { data } = this.props;
-        console.log(data);
 
         return (
-            <div>
+            <div className="result">
                 <h1>Informations sur</h1>
             </div>
 

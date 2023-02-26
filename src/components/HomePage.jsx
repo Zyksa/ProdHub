@@ -1,29 +1,33 @@
-import React from "react";
+import React, { Component } from "react";
 import { useState } from "react";
 import SearchBar from "./SearchBar";
 import Substance from "./Substance";
 
-const HomePage = () => {
-    // create state data
-    
-    const [data, setdata] = useState([]);
+class HomePage extends Component {
+    // creer un state data
+    state = {
+        data: [],
+        search: false
+    }
+
+    render() {
 
     const handleSubmit = (prod) => {
-        // recupere le resultat de la requete GET de l'API
         fetch(`http://tripbot.tripsit.me/api/tripsit/getDrug?name=${prod}`, {
-            // add no-cors option
-            mode: "no-cors",
-            method: "GET",
+            method: 'GET',
             headers: {
-                // fixe le probleme de CORS
-                "Access-Control-Allow-Origin": "*",
-            }
+                'Access-Control-Allow-Origin': '*',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.data);
+        this.setState({data: data});
+    })
+    .catch(error => console.log(error));
 
-        })
-        .then(response => response.json())
-        .then(data => {
-            setdata(data.data[0])
-        })
+      console.log(this.state.data);
+        
     }
     return <div className="homepage">
                 <div className="header">
@@ -34,9 +38,10 @@ const HomePage = () => {
 
                 <SearchBar handleSubmit={handleSubmit} />
 
-                <Substance data={this.state.data} />
 
-        </div>
+                {this.state.search && <Substance data={this.state.data} />}
+            </div>
     }
+}
  
 export default HomePage;

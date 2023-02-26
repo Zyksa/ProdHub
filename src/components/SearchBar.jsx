@@ -1,10 +1,10 @@
-import React from "react";
-const SearchBar = (props) => {
-    
+import React, { Component } from "react";
+class SearchBar extends Component {
+    render() {
     const handleSubmit = (e) => {
         e.preventDefault();
         const prod = e.target.elements.prod.value;
-        props.handleSubmit(prod);
+        this.props.handleSubmit(prod);
     }    
 
         return <div>
@@ -16,5 +16,6 @@ const SearchBar = (props) => {
                 </div>
               
               }
+            }
  
 export default SearchBar;
