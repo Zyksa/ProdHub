@@ -1,20 +1,12 @@
-import { Component } from "react";
-
-class Substance extends Component {
-    state = {  } 
-   
-
-    render() { 
-         // recupere la prop data du composant HomePage
-        const { data } = this.props;
+const Substance = ({data}) => {
+    console.log(data);
 
         return (
             <div className="result">
-                <h1>Informations sur</h1>
+                <h1>Informations about <span className="text-secondary">{ data.name}</span></h1>
             </div>
 
         );
-    }
 }
  
 export default Substance;

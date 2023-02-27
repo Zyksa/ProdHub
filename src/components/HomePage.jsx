@@ -1,47 +1,42 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
+import useGraphQLQuerie from "../hooks/useGraphQLQuerie";
 import SearchBar from "./SearchBar";
 import Substance from "./Substance";
 
-class HomePage extends Component {
-    // creer un state data
-    state = {
-        data: [],
-        search: false
-    }
-
-    render() {
+const HomePage = () => {
+    
+    const [prod, setProd] = useState("");
+    const [data, setData] = useState([]);
+    const [search, setSearch] = useState(false);
+    const { data: res, loading } = useGraphQLQuerie(prod);
+        
+    useEffect(() => {
+        if(!loading && res.substances.length < 2) {
+            setData(res.substances[0]);
+            setSearch(true);
+        } else {
+            console.log("Loading...");
+        } 
+        }, [prod, res]);
+    
 
     const handleSubmit = (prod) => {
-        fetch(`http://tripbot.tripsit.me/api/tripsit/getDrug?name=${prod}`, {
-            method: 'GET',
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data.data);
-        this.setState({data: data});
-    })
-    .catch(error => console.log(error));
-
-      console.log(this.state.data);
-        
+        setProd(prod);
     }
-    return <div className="homepage">
-                <div className="header">
-                <h1><span className="prod">Prod</span><span className="hub">Hub</span></h1>
-                <h2>Search about a prod</h2>
-                <h3>Like: <span className="example">LSD</span>, <span className="example">Xanax</span> or <span className="example">Tramadol</span></h3>
+
+    return (<div className="h-screen flex flex-col items-center bg-background space-y-12 py-4 text-white">
+        <h1 className="text-6xl font-bold"><span className="text-white">Prod</span><span className="text-black ml-1 p-1 bg-primary rounded-md">Hub</span></h1>
+                <div className="flex flex-col items-center text-lg space-y-4">
+                    <h2>Search about a prod</h2>
+                    <h3>Like: <span className="text-secondary">LSD</span>, <span className="text-secondary">Xanax</span> or <span className="text-secondary">Tramadol</span></h3>
                 </div>
 
                 <SearchBar handleSubmit={handleSubmit} />
+                
 
-
-                {this.state.search && <Substance data={this.state.data} />}
-            </div>
+                {search && <Substance data={data} />}
+            </div>)
     }
-}
  
 export default HomePage;

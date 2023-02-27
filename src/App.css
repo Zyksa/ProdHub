@@ -1,1 +1,19 @@
-
+body {
+    font-family: 'Roboto Mono', monospace;
+    background-color: black;
+    color: orange;
+  }
+  
+  .header{
+    text-align: center;
+  }
+  
+  
+  .searchbar {
+    text-align: center;
+  }
+  
+  .result {
+    text-align: center;
+  }
+  
