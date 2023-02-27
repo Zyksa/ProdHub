@@ -6,23 +6,85 @@ import Substance from "./Substance";
 
 const HomePage = () => {
     
-    const [prod, setProd] = useState("");
-    const [data, setData] = useState([]);
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState(false);
-    const { data: res, loading } = useGraphQLQuerie(prod);
-        
+    const [error, setError] = useState(null);
+    const [prod, setProd] = useState(null);
+    
+    const query = encodeURIComponent(`
+    {
+		substances(query: "${prod}") {
+			name
+			addictionPotential
+			class {
+				chemical
+				psychoactive
+			}
+			tolerance {
+				full
+				half
+				zero
+			}
+			# routes of administration
+			roas {
+				name
+				dose {
+					units
+					threshold
+					heavy
+					common { min max }
+					light { min max }
+					strong { min max }
+				}
+				duration {
+					afterglow { min max units }
+					comeup { min max units }
+					duration { min max units }
+					offset { min max units }
+					onset { min max units }
+					peak { min max units }
+					total { min max units }
+				}
+				bioavailability {
+					min max
+				}
+			}
+		}
+	}`);
+
     useEffect(() => {
-        if(!loading && res.substances.length < 2) {
-            setData(res.substances[0]);
-            setSearch(true);
-        } else {
-            console.log("Loading...");
-        } 
-        }, [prod, res]);
+        if(!search) return;
+        setLoading(true);
+        fetch(`https://api.psychonautwiki.org/?query=${query}`, {
+        method: "GET",
+        })
+        .then((res) => res.json())
+        .then((res) => {
+			if(res.data.substances.length === 0) {
+				setError("No prods founds.");
+				setLoading(false);
+                setSearch(false);
+                setData(null);
+			} else {
+				setData(res.data.substances[0]);
+				setLoading(false);
+                setSearch(false);
+                setError(null);
+			}
+        })
+        .catch((err) => {
+            setError(err);
+            setLoading(false);
+            setSearch(false);
+            setData(null);
+        });
+    }, [prod]);
     
 
     const handleSubmit = (prod) => {
         setProd(prod);
+        setSearch(true);
     }
 
     return (<div className="h-screen flex flex-col items-center bg-background space-y-12 py-4 text-white">
@@ -34,8 +96,8 @@ const HomePage = () => {
 
                 <SearchBar handleSubmit={handleSubmit} />
                 
-
-                {search && <Substance data={data} />}
+                {error && <><h1 className="text-red text-2xl">{error}</h1></>}
+                {data && <Substance data={data} />}
             </div>)
     }
  

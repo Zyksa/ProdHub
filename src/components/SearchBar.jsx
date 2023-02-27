@@ -9,8 +9,8 @@ const SearchBar = (props) => {
         return (<div>
                     <form className="text-center text-black" onSubmit={handleSubmit}>
                         <label htmlFor="prod"></label>
-                        <input type="text" id="prod" name="prod" className="" placeholder="Search for a prod" />
-                        <button className="m-2 px-2 py-1 rounded-md bg-primary" type="submit">Search</button>
+                        <input type="text" id="prod" name="prod" className="rounded-lg p-1" autoComplete="off" placeholder="Search for a prod" />
+                        <button className="m-2 px-2 py-1 rounded-md bg-primary text-white" type="submit">Search</button>
                     </form>
                 </div>
         )

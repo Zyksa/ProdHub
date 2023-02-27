@@ -53,8 +53,13 @@ export default function useGraphQLQuerie(substance) {
         })
         .then((res) => res.json())
         .then((res) => {
-            setData(res.data);
-            setLoading(false);
+			if(res.data.substances.length === 0) {
+				setError("No prods founds.");
+				setLoading(false);
+			} else {
+				setData(res.data);
+				setLoading(false);
+			}
         })
         .catch((err) => {
             setError(err);
